@@ -1,0 +1,39 @@
+name: Multi-Platform Matrix Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Build on Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14, 16, 18]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: matrix-fd210d7
+        run: echo "Building for Node version ${{ matrix.node-version }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Generate build artifact
+        run: |
+          echo "This is the build output for Node version ${{ matrix.node-version }}" > build_output_${{ matrix.node-version }}.txt
+          echo "Build timestamp: $(date)" >> build_output_${{ matrix.node-version }}.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-fd210d7-v${{ matrix.node-version }}
+          path: build_output_${{ matrix.node-version }}.txt
